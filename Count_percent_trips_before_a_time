@@ -1,0 +1,19 @@
+/*Count the percentage of a usertype's starts taken before 9:00 am */
+SELECT anytime.usertype, ROUND(before_nine.before_nine_total/
+anytime.anytime_total * 100, 2) AS percent_of_usertrips_before_noon
+FROM(
+(
+SELECT usertype, CAST(COUNT(*) AS numeric ) AS anytime_total --- must be numeric, not float, why?
+FROM bikeshare_data
+GROUP BY usertype
+) AS anytime
+FULL JOIN
+(
+SELECT usertype, CAST(COUNT(*) AS numeric ) AS before_nine_total
+FROM bikeshare_data
+WHERE CAST(start_time AS TIME) <= '09:00:00'::TIME
+GROUP BY usertype
+) AS before_nine
+ON anytime.usertype = before_nine.usertype
+)
+GROUP BY anytime.usertype, anytime.anytime_total, before_nine.before_nine_total;
