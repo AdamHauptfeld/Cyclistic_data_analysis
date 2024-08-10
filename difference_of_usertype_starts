@@ -1,0 +1,35 @@
+​/* Stations  with over 1000 customer starts, ordered by similarity in number of customer and subscriber starts*/
+
+
+SELECT total_query.station_name,
+   total_query.total_count,
+   total_query.abs_difference
+FROM
+(
+SELECT 
+sub_query.from_station_name AS station_name,
+sub_query.sub_count AS sub_count,
+cust_query.cust_count  AS cust_count,
+sub_query.sub_count + cust_query.cust_count AS total_count,
+ABS(sub_query.sub_count - cust_query.cust_count) AS abs_difference
+   FROM
+   (
+       SELECT from_station_name, COUNT(from_station_name) AS sub_count
+       FROM bikeshare_data
+       WHERE usertype = 'Subscriber'
+       GROUP BY from_station_name
+       ORDER BY sub_count DESC
+   ) AS sub_query
+   JOIN
+   (
+       SELECT from_station_name, COUNT(from_station_name) AS cust_count
+       FROM bikeshare_data
+       WHERE usertype = 'Customer'
+       GROUP BY from_station_name
+       ORDER BY cust_count DESC
+   ) AS cust_query
+   ON sub_query.from_station_name = cust_query.from_station_name
+   ) AS total_query
+WHERE total_query.cust_count > 1000
+ORDER BY total_query.abs_difference
+LIMIT 20;
