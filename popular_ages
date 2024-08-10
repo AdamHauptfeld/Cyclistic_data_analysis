@@ -1,0 +1,11 @@
+/*Most popular ages */
+SELECT usertype, age, COUNT(age)
+FROM(
+	SELECT usertype, 2019-birthyear AS age
+	FROM bikeshare_data
+	WHERE birthyear IS NOT NULL
+) AS age_table
+WHERE usertype = 'Customer'
+GROUP BY usertype, age
+ORDER BY COUNT(age) DESC
+LIMIT 10;
