@@ -1,0 +1,8 @@
+/*Find mean ages of riders by usertype */
+SELECT usertype, ROUND(AVG(age), 2)
+FROM(
+	SELECT trip_id, usertype, 2019-birthyear AS age
+	FROM bikeshare_data
+	WHERE birthyear IS NOT NULL
+) AS age_table
+GROUP BY usertype;
