@@ -23,7 +23,7 @@ SELECT
 	AS percent_casual_trips_starting_from
 FROM top_customer_stations, total_customer_stations;
 
-/* Find 20 most popular stations for customers as percentage of total casual trips */
+/* Percentage of all trips starting from twenty most popular from_stations */
 WITH top_customer_stations AS (
 	SELECT 
 		from_station_name, 
