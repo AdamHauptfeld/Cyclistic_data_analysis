@@ -1,0 +1,20 @@
+/* Find 20 most popular stations for customers */
+SELECT subscriber.from_station_name AS station_name, 
+	customer.customer_total_count AS total_casual_uses,
+	subscriber.subscriber_total_count AS total_annual_member_uses
+FROM(
+	(SELECT from_station_name, COUNT(from_station_name) + COUNT(to_station_name) AS customer_total_count
+	FROM bikeshare_data
+	WHERE usertype = 'Customer'
+	GROUP BY from_station_name
+	ORDER BY customer_total_count DESC
+	LIMIT 20) AS customer
+JOIN
+	(SELECT from_station_name, COUNT(from_station_name) + COUNT(to_station_name) AS subscriber_total_count
+	FROM bikeshare_data
+	WHERE usertype = 'Subscriber'
+	GROUP BY from_station_name
+	ORDER BY subscriber_total_count DESC) AS subscriber
+ON customer.from_station_name = subscriber.from_station_name
+)
+ORDER BY total_casual_uses DESC;
