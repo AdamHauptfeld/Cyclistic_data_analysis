@@ -1,0 +1,8 @@
+/*Find mode age of each usertype */
+SELECT usertype, mode() WITHIN GROUP (order by age)
+FROM(
+	SELECT trip_id, usertype, 2019-birthyear AS age
+	FROM bikeshare_data
+	WHERE birthyear IS NOT NULL
+) AS age_table
+GROUP BY usertype;
