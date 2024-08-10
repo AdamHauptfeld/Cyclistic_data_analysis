@@ -1,0 +1,23 @@
+/*What percentage of each gender are customers or subscribers? */
+WITH gender_counts AS 
+(
+   SELECT 
+   gender,
+   usertype,
+   COUNT(trip_id) AS trip_count,
+   SUM(COUNT(trip_id)) OVER (PARTITION BY gender) AS total_trips
+   FROM 
+   bikeshare_data
+	WHERE gender IS NOT NULL
+   GROUP BY 
+   gender, usertype
+)
+SELECT 
+gender,
+usertype,
+ROUND(trip_count / total_trips * 100, 2) AS percent_of_gender
+FROM 
+gender_counts
+WHERE gender IS NOT NULL
+ORDER BY 
+gender, usertype;
