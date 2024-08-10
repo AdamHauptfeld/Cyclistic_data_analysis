@@ -8,7 +8,7 @@ WITH gender_counts AS
    SUM(COUNT(trip_id)) OVER (PARTITION BY usertype) AS total_trips_by_type
    FROM 
    bikeshare_data
-   ---WHERE gender IS NOT NULL 
+   WHERE gender IS NOT NULL 
    GROUP BY 
    gender, usertype
 )
