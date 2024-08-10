@@ -1,0 +1,47 @@
+/* Find 20 most popular stations for customers as percentage of total casual trips */
+WITH top_customer_stations AS (
+	SELECT 
+		from_station_name, 
+		COUNT(from_station_name) AS per_station_total
+	FROM 
+		bikeshare_data
+	WHERE usertype = 'Customer'
+	GROUP BY from_station_name
+	ORDER BY per_station_total DESC
+	LIMIT 20
+),
+total_customer_stations AS (
+	SELECT 
+		COUNT(*) AS total_count
+	FROM 
+		bikeshare_data
+	WHERE usertype = 'Customer'
+) 
+SELECT 
+	top_customer_stations.from_station_name, 
+	ROUND(top_customer_stations.per_station_total::numeric/total_customer_stations.total_count::numeric * 100, 2)
+	AS percent_casual_trips_starting_from
+FROM top_customer_stations, total_customer_stations;
+
+/* Find 20 most popular stations for customers as percentage of total casual trips */
+WITH top_customer_stations AS (
+	SELECT 
+		from_station_name, 
+		COUNT(from_station_name) AS per_station_total
+	FROM 
+		bikeshare_data
+	WHERE usertype = 'Customer'
+	GROUP BY from_station_name
+	ORDER BY per_station_total DESC
+	LIMIT 20
+),
+total_customer_stations AS (
+	SELECT 
+		COUNT(*) AS total_count
+	FROM 
+		bikeshare_data
+	WHERE usertype = 'Customer'
+) 
+SELECT 
+	ROUND((SUM(top_customer_stations.per_station_total)::numeric * 100/MAX(total_customer_stations.total_count)::numeric), 2) AS top_20_stations_percent_of_total
+FROM top_customer_stations, total_customer_stations;
